@@ -32,6 +32,11 @@ export const env = {
    * 端口号（可选，默认3000）
    */
   PORT: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
+
+  /**
+   * Redis 连接字符串
+   */
+  REDIS_URL: assertEnv('REDIS_URL'),
 } as const;
 
 /**
