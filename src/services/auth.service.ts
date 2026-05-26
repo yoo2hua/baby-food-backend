@@ -1,12 +1,10 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import prisma from '../lib/prisma'
+import { authRepository } from '../modules/auth/auth.repository'
 import { env } from '../config/env'
 
 export async function register(email: string, password: string) {
-  const exist = await prisma.user.findUnique({
-    where: { email },
-  })
+  const exist = await authRepository.findUnique({ email })
 
   if (exist) {
     throw new Error('用户已存在')
@@ -14,11 +12,9 @@ export async function register(email: string, password: string) {
 
   const hashed = await bcrypt.hash(password, 10)
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashed,
-    },
+  const user = await authRepository.create({
+    email,
+    password: hashed,
   })
 
   return {
@@ -28,9 +24,7 @@ export async function register(email: string, password: string) {
 }
 
 export async function login(email: string, password: string) {
-  const user = await prisma.user.findUnique({
-    where: { email },
-  })
+  const user = await authRepository.findUnique({ email })
 
   if (!user) {
     throw new Error('用户不存在')

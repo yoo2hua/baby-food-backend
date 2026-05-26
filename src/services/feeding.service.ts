@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma";
+import { recordRepository } from "../modules/record/record.repository";
 
 export async function createRecord(
   babyId: string,
@@ -6,21 +6,9 @@ export async function createRecord(
   type: string,
   reaction?: string
 ) {
-  return prisma.feedingRecord.create({
-    data: {
-      babyId,
-      foodName,
-      type,
-      reaction,
-    },
-  });
+  return recordRepository.create(babyId, foodName, type, reaction);
 }
 
 export async function getRecords(babyId: string) {
-  return prisma.feedingRecord.findMany({
-    where: { babyId },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  return recordRepository.findMany(babyId);
 }

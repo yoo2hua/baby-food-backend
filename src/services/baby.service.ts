@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma";
+import { babyRepository } from "../modules/baby/baby.repository";
 
 export async function createBaby(
   userId: string,
@@ -6,20 +6,16 @@ export async function createBaby(
   birthday: string,
   gender?: string
 ) {
-  const baby = await prisma.baby.create({
-    data: {
-      name,
-      birthday: new Date(birthday),
-      gender,
-      userId,
-    },
+  const baby = await babyRepository.create({
+    name,
+    birthday: new Date(birthday),
+    gender,
+    userId,
   });
 
   return baby;
 }
 
 export async function getBabies(userId: string) {
-  return prisma.baby.findMany({
-    where: { userId },
-  });
+  return babyRepository.findMany({ userId });
 }
