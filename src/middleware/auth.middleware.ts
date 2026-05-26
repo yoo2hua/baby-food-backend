@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env";
+import { response } from "../common/utils/response";
 
 // 扩展 req 类型（后面你会经常用）
 export interface AuthRequest extends Request {
@@ -16,13 +17,13 @@ export function authMiddleware(
     // 1. 获取 token
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      return res.status(401).json({ message: "未携带 token" });
+      return res.status(401).json(response.error("未携带 token", 401));
     }
 
     const token = authHeader.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ message: "token 格式错误" });
+      return res.status(401).json(response.error("token 格式错误", 401));
     }
 
     // 2. 解析 token
@@ -33,6 +34,6 @@ export function authMiddleware(
 
     next();
   } catch (err) {
-    return res.status(401).json({ message: "token 无效或已过期" });
+    return res.status(401).json(response.error("token 无效或已过期", 401));
   }
 }

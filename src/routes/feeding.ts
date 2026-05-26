@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { authMiddleware, AuthRequest } from '../middleware/auth.middleware'
 import { createRecord, getRecords } from '../services/feeding.service'
+import { response } from '../common/utils/response'
 
 const router: Router = Router()
 
@@ -10,7 +11,7 @@ router.post('/', authMiddleware, async (req: AuthRequest, res) => {
 
   const record = await createRecord(babyId, foodName, type, reaction)
 
-  res.json(record)
+  return res.json(response.success(record))
 })
 
 // 查询记录
@@ -19,7 +20,7 @@ router.get<{ babyId: string }>('/:babyId', authMiddleware, async (req, res) => {
 
   const records = await getRecords(babyId)
 
-  res.json(records)
+  return res.json(response.success(records))
 })
 
 export default router

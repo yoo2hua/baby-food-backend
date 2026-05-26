@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { authMiddleware, AuthRequest } from "../middleware/auth.middleware";
 import { createBaby, getBabies } from "../services/baby.service";
+import { response } from "../common/utils/response";
 
 const router: Router = Router();
 
@@ -15,13 +16,13 @@ router.post("/", authMiddleware, async (req: AuthRequest, res) => {
     gender
   );
 
-  res.json(baby);
+  return res.json(response.success(baby));
 });
 
 // 获取宝宝列表
 router.get("/", authMiddleware, async (req: AuthRequest, res) => {
   const babies = await getBabies(req.user.userId);
-  res.json(babies);
+  return res.json(response.success(babies));
 });
 
 export default router;

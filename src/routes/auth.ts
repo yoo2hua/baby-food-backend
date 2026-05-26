@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { login, register } from "../services/auth.service";
+import { response } from "../common/utils/response";
 
 const router: Router = Router();
 
@@ -9,11 +10,9 @@ router.post("/register", async (req, res) => {
 
     const user = await register(email, password);
 
-    res.json(user);
+    return res.json(response.success(user));
   } catch (err: any) {
-    res.status(400).json({
-      message: err.message,
-    });
+    return res.status(400).json(response.error(err.message, 400));
   }
 });
 
@@ -22,9 +21,9 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const result = await login(email, password);
-    res.json(result);
+    return res.json(response.success(result));
   } catch (e: any) {
-    res.status(400).json({ message: e.message });
+    return res.status(400).json(response.error(e.message, 400));
   }
 });
 
