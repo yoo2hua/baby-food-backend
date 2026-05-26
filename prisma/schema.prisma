@@ -32,6 +32,20 @@ model Baby {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
 
+  records   FeedingRecord[]
+
   createdAt DateTime @default(now())
 }
 
+model FeedingRecord {
+  id        String   @id @default(cuid())
+
+  foodName  String
+  type      String   // 泥状 / 颗粒 / 水果 / 蛋白
+  reaction  String?  // 喜欢 / 一般 / 过敏 / 不喜欢
+
+  createdAt DateTime @default(now())
+
+  babyId    String
+  baby      Baby     @relation(fields: [babyId], references: [id])
+}

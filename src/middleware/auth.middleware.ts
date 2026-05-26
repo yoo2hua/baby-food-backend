@@ -15,8 +15,6 @@ export function authMiddleware(
   try {
     // 1. 获取 token
     const authHeader = req.headers.authorization;
-    console.log("🌊 ~ authMiddleware ~ authHeader:", authHeader)
-
     if (!authHeader) {
       return res.status(401).json({ message: "未携带 token" });
     }
