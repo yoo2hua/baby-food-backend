@@ -2,26 +2,25 @@ FROM node:20-alpine AS base
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+# 安装 pnpm
+RUN corepack enable
 
-COPY prisma ./prisma
-RUN npx prisma generate
+# 只复制依赖声明文件
+COPY package.json pnpm-lock.yaml ./
 
+# 安装依赖（关键）
+RUN pnpm install --frozen-lockfile
+
+# 复制源码
 COPY . .
 
-RUN npm run build
+# Prisma generate
+RUN pnpm prisma generate
 
+# build
+RUN npx prisma generate
+RUN pnpm build
 
-FROM node:20-alpine AS runtime
+EXPOSE 3000
 
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY --from=base /app/dist ./dist
-COPY --from=base /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=base /app/node_modules/@prisma ./node_modules/@prisma
-
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/app.js"]
