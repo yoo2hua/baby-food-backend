@@ -1,28 +1,27 @@
-import { Router } from "express";
-import { authMiddleware, AuthRequest } from "../middleware/auth.middleware";
-import { createBaby, getBabies } from "../services/baby.service";
-import { response } from "../common/utils/response";
+import { Router } from 'express'
+import { authMiddleware, AuthRequest } from '../middleware/auth.middleware'
+import { createBaby, getBabies } from '../services/baby.service'
+import { response } from '../common/utils/response'
+import type { CreateBabyBody } from '../types/api'
 
-const router: Router = Router();
+const router: Router = Router()
 
-// 创建宝宝
-router.post("/", authMiddleware, async (req: AuthRequest, res) => {
-  const { name, birthday, gender } = req.body;
+router.post('/', authMiddleware, async (req: AuthRequest<CreateBabyBody>, res) => {
+  const { name, birthday, gender } = req.body
 
-  const baby = await createBaby(
-    req.user.userId,
+  const baby = await createBaby({
+    userId: req.user!.userId,
     name,
     birthday,
-    gender
-  );
+    gender,
+  })
 
-  return res.json(response.success(baby));
-});
+  return res.json(response.success(baby))
+})
 
-// 获取宝宝列表
-router.get("/", authMiddleware, async (req: AuthRequest, res) => {
-  const babies = await getBabies(req.user.userId);
-  return res.json(response.success(babies));
-});
+router.get('/', authMiddleware, async (req: AuthRequest, res) => {
+  const babies = await getBabies(req.user!.userId)
+  return res.json(response.success(babies))
+})
 
-export default router;
+export default router

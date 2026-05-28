@@ -4,8 +4,11 @@ import { env } from "../config/env";
 import { response } from "../common/utils/response";
 
 // 扩展 req 类型（后面你会经常用）
-export interface AuthRequest extends Request {
-  user?: any;
+export interface AuthRequest<TBody = any> extends Request<Record<string, string>, {}, TBody> {
+  user?: {
+    userId: string;
+    email: string;
+  };
 }
 
 export function authMiddleware(
@@ -27,7 +30,7 @@ export function authMiddleware(
     }
 
     // 2. 解析 token
-    const decoded = jwt.verify(token, env.JWT_SECRET);
+    const decoded = jwt.verify(token, env.JWT_SECRET) as { userId: string; email: string };
 
     // 3. 挂载用户信息
     req.user = decoded;

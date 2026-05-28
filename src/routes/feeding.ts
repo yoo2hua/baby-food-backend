@@ -2,21 +2,21 @@ import { Router } from 'express'
 import { authMiddleware, AuthRequest } from '../middleware/auth.middleware'
 import { createRecord, getRecords } from '../services/feeding.service'
 import { response } from '../common/utils/response'
+import { createRecordSchema } from '../schemas/record.schema'
+import type { CreateRecordBody } from '../types/api'
 
 const router: Router = Router()
 
-// 添加记录
-router.post('/', authMiddleware, async (req: AuthRequest, res) => {
-  const { babyId, foodName, type, reaction } = req.body
+router.post('/', authMiddleware, async (req: AuthRequest<CreateRecordBody>, res) => {
+  const { body } = createRecordSchema.parse(req.body)
 
-  const record = await createRecord(babyId, foodName, type, reaction)
+  const record = await createRecord(body)
 
   return res.json(response.success(record))
 })
 
-// 查询记录
-router.get<{ babyId: string }>('/:babyId', authMiddleware, async (req, res) => {
-  const babyId = req.params.babyId
+router.get('/:babyId', authMiddleware, async (req, res) => {
+  const babyId = String(req.params.babyId ?? '')
 
   const records = await getRecords(babyId)
 
