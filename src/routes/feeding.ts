@@ -8,7 +8,7 @@ import type { CreateRecordBody } from '../types/api'
 const router: Router = Router()
 
 router.post('/', authMiddleware, async (req: AuthRequest<CreateRecordBody>, res) => {
-  const { body } = createRecordSchema.parse(req.body)
+  const body = createRecordSchema.parse(req.body)
 
   const record = await createRecord(body)
 
