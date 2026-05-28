@@ -18,9 +18,8 @@ COPY . .
 RUN pnpm prisma generate
 
 # build
-RUN npx prisma generate
 RUN pnpm build
 
 EXPOSE 3000
 
-CMD ["node", "dist/app.js"]
+CMD ["node", "dist/src/app.js"]
